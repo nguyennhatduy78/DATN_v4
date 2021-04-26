@@ -118,7 +118,7 @@ def Run():
             result = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
             if not dont_show:
                 cv2.imshow("result", result)
-            if file_out:
+            if file_out_video:
                 out.write(result)
             if cv2.waitKey(1) & 0xFF == ord('q'):
                 print("Q pressed")
