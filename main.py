@@ -30,6 +30,7 @@ threshold = 0.2
 
 
 def Run():
+    print("Current threshold: ", threshold)
     cfg.YOLO.CLASSES = './weights/'+class_names
     if new:
         sm.save_tf(weights_prototype_file, input_size, threshold, class_names)
@@ -126,3 +127,6 @@ def Run():
                 break
         vid.release()
         cv2.destroyAllWindows()
+
+if __name__ == '__main__':
+    Run()
