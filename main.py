@@ -12,27 +12,31 @@ import cv2
 import numpy as np
 
 # Input setting
-input_type = 2
-data_folder = 'noentry/'
-video_file_name = 'stop1.mp4'  # Leave empty for webcam
-image_file_name = 'test.jpg'
+input_type = 1
+webcam = False
+image_file_path = './data/noentry/noentry.jpeg'
+video_file_path = './data/noentry/noentry.mov' if not webcam and input_type == 2 else 0
 
 # Opt init
-file_out_video = False
+file_out_video = True
 file_out_image = True
 new = False
 dont_show = False
 
 # Parameter init
-weights_prototype_file = 'yolov4.weights'
-class_names = 'coco.names'
-input_size = 416
+weights_prototype_file = 'noentryV4_final.weights'
+class_names = 'noentry.names'
+input_size = 608
 threshold = 0.2
+
+# Variables
+video_file_name = video_file_path.split('/')[-1]
+image_file_name = image_file_path.split('/')[-1]
 
 
 def Run():
     print("Current threshold: ", threshold)
-    cfg.YOLO.CLASSES = './weights/'+class_names
+    cfg.YOLO.CLASSES = './weights/' + class_names
     if new:
         sm.save_tf(weights_prototype_file, input_size, threshold, class_names)
     # STRIDES, ANCHORS, NUM_CLASS, XYSCALE = utils.load_config()
@@ -46,7 +50,7 @@ def Run():
     allowed_classes = list(class_names_list.values())
 
     if input_type == 1:
-        image_ = cv2.imread('./data/' + data_folder + image_file_name)
+        image_ = cv2.imread(image_file_path)
         image_ = cv2.cvtColor(image_, cv2.COLOR_BGR2RGB)
         image = cv2.resize(image_, (input_size, input_size))
         image = image / 255
@@ -76,17 +80,15 @@ def Run():
         if file_out_image:
             cv2.imwrite('./data/image/{}.jpg'.format(image_file_name.split('.')[0] + '_result'), image)
     elif input_type == 2:
-        if video_file_name == '':
-            vid = cv2.VideoCapture(0)
-        else:
-            vid = cv2.VideoCapture('./data/' + data_folder + video_file_name)
+        vid = cv2.VideoCapture(video_file_path)
         if file_out_video:
             # by default VideoCapture returns float instead of int
             width = int(vid.get(cv2.CAP_PROP_FRAME_WIDTH))
             height = int(vid.get(cv2.CAP_PROP_FRAME_HEIGHT))
             fps = int(vid.get(cv2.CAP_PROP_FPS))
             codec = cv2.VideoWriter_fourcc(*'mp4v')
-            out = cv2.VideoWriter('./data/video/{}.mp4'.format(video_file_name.split('.')[0]+'_result'), codec, fps, (width, height))
+            out = cv2.VideoWriter('./data/video/{}.mp4'.format(video_file_name.split('.')[0] + '_result'), codec, fps,
+                                  (width, height))
         while True:
             ret, frame = vid.read()
             if ret:
@@ -94,7 +96,7 @@ def Run():
             else:
                 print("Video end")
                 break
-            frame_size = frame.shape[:2]
+            # frame_size = frame.shape[:2]
             image_data = cv2.resize(frame, (input_size, input_size))
             image_data = image_data / 255.
             image_data = image_data[np.newaxis, ...].astype(np.float32)
@@ -128,6 +130,7 @@ def Run():
                 break
         vid.release()
         cv2.destroyAllWindows()
+
 
 if __name__ == '__main__':
     Run()
