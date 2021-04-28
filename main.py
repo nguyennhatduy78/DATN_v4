@@ -30,6 +30,7 @@ threshold = 0.2
 
 
 def Run():
+    cfg.YOLO.CLASSES = './weights/'+class_names
     if new:
         sm.save_tf(weights_prototype_file, input_size, threshold, class_names)
     # STRIDES, ANCHORS, NUM_CLASS, XYSCALE = utils.load_config()
