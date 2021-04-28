@@ -13,6 +13,7 @@ import numpy as np
 
 # Input setting
 input_type = 2
+data_folder = 'noentry/'
 video_file_name = 'stop1.mp4'  # Leave empty for webcam
 image_file_name = 'test.jpg'
 
@@ -45,7 +46,7 @@ def Run():
     allowed_classes = list(class_names_list.values())
 
     if input_type == 1:
-        image_ = cv2.imread('./data/' + image_file_name)
+        image_ = cv2.imread('./data/' + data_folder + image_file_name)
         image_ = cv2.cvtColor(image_, cv2.COLOR_BGR2RGB)
         image = cv2.resize(image_, (input_size, input_size))
         image = image / 255
@@ -78,7 +79,7 @@ def Run():
         if video_file_name == '':
             vid = cv2.VideoCapture(0)
         else:
-            vid = cv2.VideoCapture('./data/'+video_file_name)
+            vid = cv2.VideoCapture('./data/' + data_folder + video_file_name)
         if file_out_video:
             # by default VideoCapture returns float instead of int
             width = int(vid.get(cv2.CAP_PROP_FRAME_WIDTH))
